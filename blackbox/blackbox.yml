@@ -1,0 +1,14 @@
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [] #default to 2xx
+      method: GET
+  dnser:
+    prober: dns
+    timeout: 2s
+    dns:
+      query_name: kernel.org
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false

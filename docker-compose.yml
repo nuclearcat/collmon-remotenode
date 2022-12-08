@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  pushprox:
+    container_name: pushprox
+    image: nuclearcat/pushprox
+    network_mode: host
+    command: /usr/bin/pushprox-client --fqdn=remotenodehostname --proxy-url=http://CHANGEME.com:PORT/
+
+  pushprox2:
+    container_name: pushprox2
+    image: nuclearcat/pushprox
+    network_mode: host
+    command: /usr/bin/pushprox-client --fqdn=otherhostfqdn --proxy-url=http://CHANGEME.com:PORT/
+
+  remotenodehostname:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: remotenodehostname
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+
+  blackboxexporter:
+    container_name: blackboxexporter
+    privileged: true
+    image: prom/blackbox-exporter
+    network_mode: host
+    volumes:
+      - ./blackbox:/config
+    command:
+      - '--config.file=/config/blackbox.yml'
